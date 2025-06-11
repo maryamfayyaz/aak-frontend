@@ -39,12 +39,10 @@ const Login = () => {
       dispatch(loginSuccess({ token: res.data.token, user: res.data.user }));
 
       toast.success("Login successful");
-      navigate("dashboard");
+      navigate("/dashboard");
     } catch (error: any) {
       dispatch(loginFail(getErrorMessage(error)));
     }
-
-    dispatch({ type: "user/login", payload: loginData });
   };
 
   return (
