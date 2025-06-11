@@ -22,14 +22,7 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route
-            path="/"
-            element={
-              <AuthRoute>
-                <App />
-              </AuthRoute>
-            }
-          />
+          <Route path="/" element={<App />} />
           <Route
             path="/login"
             element={
