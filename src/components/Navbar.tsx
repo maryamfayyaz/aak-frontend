@@ -1,9 +1,12 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import '../styles/navbar.css'
-
+import React from "react";
+import { Link } from "react-router-dom";
+import "../styles/navbar.css";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store/store";
 
 const Navbar = () => {
+  const { isAuthenticated, user } = useSelector((state: RootState) => state.user);
+
   return (
     <nav>
       <div>
@@ -14,12 +17,24 @@ const Navbar = () => {
           />
         </Link>
       </div>
-      <div className='right'>
-        <Link to="/login" className='primary'>Login</Link>
-        <Link to="/signup" className='secondary'>Signup</Link>
+      <div className="right">
+        {isAuthenticated ? (
+          <Link to="#" className="primary">
+            {user?.first_name} {user?.last_name}
+          </Link>
+        ) : (
+          <>
+            <Link to="/login" className="primary">
+              Login
+            </Link>
+            <Link to="/signup" className="secondary">
+              Signup
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   );
-}
+};
 
-export default Navbar
+export default Navbar;

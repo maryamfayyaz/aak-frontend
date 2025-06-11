@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { get } from "lodash";
+import { get, pick } from "lodash";
 
 interface UserData {
   first_name: string;
@@ -15,18 +15,23 @@ interface UserState {
   isAuthenticated: boolean;
 }
 
-const initialUser: UserData = {
-  first_name: "",
-  last_name: "",
-  email: "",
+const getToken = () => localStorage.getItem("token") ?? null;
+
+const getUser = () => {
+  const user = localStorage.getItem("user");
+  return user ? JSON.parse(user) : null;
 };
+
+const initialUser: UserData = getUser();
+
+const initialToken = getToken();
 
 const initialState: UserState = {
   user: initialUser,
   error: "",
   loading: false,
-  token: null,
-  isAuthenticated: false,
+  token: initialToken,
+  isAuthenticated: !!initialToken,
 };
 
 const userSlice = createSlice({
@@ -42,10 +47,12 @@ const userSlice = createSlice({
       state.error = action.payload;
     },
     loginSuccess: (state: UserState, action: PayloadAction<{ token: string; user: UserData }>) => {
-      state = { ...state, ...get(action, ["payload.user", "payload.token"]), loading: false, isAuthenticated: true };
+      state = { ...state, ...pick(get(action, "payload"), ["user", "token"]), loading: false, isAuthenticated: true };
 
       localStorage.setItem("token", action.payload.token);
       localStorage.setItem("user", JSON.stringify(action.payload.user));
+
+      return state;
     },
     logout: (state: UserState) => {
       state.user = null;
@@ -57,7 +64,6 @@ const userSlice = createSlice({
     },
   },
 });
-
 
 export const { loginBegin, loginFail, loginSuccess, logout } = userSlice.actions;
 export default userSlice.reducer;

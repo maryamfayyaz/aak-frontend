@@ -11,6 +11,8 @@ import Navbar from "./components/Navbar.tsx";
 import { Provider } from "react-redux";
 import store from "./store/store.ts";
 import { ToastContainer } from "react-toastify";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import AuthRoute from "./components/AuthRoute.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -19,10 +21,38 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/"
+            element={
+              <AuthRoute>
+                <App />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <AuthRoute>
+                <Login />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <AuthRoute>
+                <Signup />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </Provider>
