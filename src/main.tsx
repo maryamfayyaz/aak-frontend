@@ -13,6 +13,7 @@ import store from "./store/store.ts";
 import { ToastContainer } from "react-toastify";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import AuthRoute from "./components/AuthRoute.tsx";
+import Notfound from "./components/Notfound.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -53,6 +54,8 @@ createRoot(document.getElementById("root")!).render(
               </ProtectedRoute>
             }
           />
+
+          <Route path="*" element={<Notfound />} />
         </Routes>
       </BrowserRouter>
     </Provider>
