@@ -1,11 +1,21 @@
-import React from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../styles/navbar.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store/store";
+import { loginFail } from "../store/userSlice";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
-  const { isAuthenticated, user } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+  const { isAuthenticated, user, error } = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(loginFail(""));
+    }
+  }, [error]);
 
   return (
     <nav>

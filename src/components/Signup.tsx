@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../store/store";
+import { useDispatch } from "react-redux";
 import { loginBegin, loginFail, loginSuccess } from "../store/userSlice";
 import axiosClient from "../utils/api";
 import { getErrorMessage } from "../utils/helpers";
@@ -13,13 +12,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [signupData, setSignupData] = useState({ email: "", password: "", first_name: "", last_name: "", username: "", confirm_password: "" });
-  const { error } = useSelector((state: RootState) => state.user);
-
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-    }
-  }, [error]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSignupData({
@@ -46,7 +38,7 @@ const Login = () => {
 
     try {
       const res = await axiosClient.post("/signup/", submitData);
-      dispatch(loginSuccess({ token: res.data.token, user: res.data.user }));
+      dispatch(loginSuccess({ access_token: res.data.token, user: res.data.user, refresh_token: res.data.refresh }));
 
       toast.success("Signup successful");
       navigate("/dashboard");

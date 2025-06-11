@@ -11,11 +11,13 @@ interface UserState {
   user: UserData | null;
   error: string | null;
   loading: boolean;
-  token: string | null;
+  access_token: string | null;
+  refresh_token: string | null;
   isAuthenticated: boolean;
 }
 
-const getToken = () => localStorage.getItem("token") ?? null;
+const getAccessToken = () => localStorage.getItem("access_token") ?? null;
+const getRefreshToken = () => localStorage.getItem("refresh_token") ?? null;
 
 const getUser = () => {
   const user = localStorage.getItem("user");
@@ -24,13 +26,14 @@ const getUser = () => {
 
 const initialUser: UserData = getUser();
 
-const initialToken = getToken();
+const initialToken = getAccessToken();
 
 const initialState: UserState = {
   user: initialUser,
   error: "",
   loading: false,
-  token: initialToken,
+  access_token: initialToken,
+  refresh_token: getRefreshToken(),
   isAuthenticated: !!initialToken,
 };
 
@@ -46,10 +49,11 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    loginSuccess: (state: UserState, action: PayloadAction<{ token: string; user: UserData }>) => {
-      state = { ...state, ...pick(get(action, "payload"), ["user", "token"]), loading: false, isAuthenticated: true };
+    loginSuccess: (state: UserState, action: PayloadAction<{ access_token: string; refresh_token: string; user: UserData }>) => {
+      state = { ...state, ...pick(get(action, "payload"), ["user", "access_token", "refresh_token", ]), loading: false, isAuthenticated: true };
 
-      localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("access_token", action.payload.access_token);
+      localStorage.setItem("refresh_token", action.payload.refresh_token);
       localStorage.setItem("user", JSON.stringify(action.payload.user));
 
       return state;
@@ -57,9 +61,11 @@ const userSlice = createSlice({
     logout: (state: UserState) => {
       state.user = null;
       state.isAuthenticated = false;
-      state.token = null;
+      state.access_token = null;
+      state.refresh_token = null;
 
-      localStorage.removeItem("token");
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
       localStorage.removeItem("user");
     },
   },
